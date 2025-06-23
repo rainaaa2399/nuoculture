@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>傩韵新章 - 傩文化小游戏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 字体 & Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #1A1C1A;
+      --gold: #8E7C58;
+      --green: #4B5650;
+      --beige: #FBE9BB;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: var(--bg-color);
+      color: var(--beige);
+      font-family: 'Noto Serif SC', serif;
+      overflow: hidden;
+    }
+
+    #stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .layout {
+      position: relative;
+      display: flex;
+      height: 100vh;
+      z-index: 2;
+    }
+
+    .left-panel {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 26px;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: transparent;
+      background: linear-gradient(to bottom, #FBE9BB, #8E7C58);
+      -webkit-background-clip: text;
+      width: 80px;
+    }
+
+    .game-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 100px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #FBE9BB, #8E7C58);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 20px;
+    }
+
+    .game-box {
+      width: 100px;
+      height: 100px;
+      background-color: var(--green);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .game-box:hover {
+      background-color: var(--gold);
+    }
+
+    .game-img {
+      max-height: 80px;
+      display: none;
+    }
+
+    .modal-content {
+      background-color: var(--dark-black);
+      color: #fff;
+    }
+
+    .btn-gold {
+      background-color: var(--gold);
+      color: white;
+      border: none;
+    }
+
+    .btn-gold:hover {
+      background-color: #a08b6f;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="layout">
+  <div class="left-panel">傩韵新章</div>
+  <div class="game-area">
+    <div class="main-title">Nuó Culture</div>
+    <p class="text-light mb-4">找出真正的傩面！</p>
+    <div class="grid">
+      <div onclick="checkBox(this)" data-id="0" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="1" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="2" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="3" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="4" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="5" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="6" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="7" class="game-box"><img class="game-img" /></div>
+      <div onclick="checkBox(this)" data-id="8" class="game-box"><img class="game-img" /></div>
+    </div>
+  </div>
+  <div class="left-panel">傩文化小游戏</div>
+</div>
+
+<!-- 结果模态框 -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title">🎭 傩面介绍</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="maskInfo">你找到了目标傩面！</p>
+        <img id="maskImage" class="img-fluid mt-2" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-gold" onclick="startGame()">再玩一次</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 游戏逻辑 -->
+<script>
+  const masks = [
+  { name: "八十大王", img: "images/八十大王.jpg", intro: "八十大王傩面主要与江西傩文化相关，属于江西傩面具的一种。江西傩舞历史悠久，尤其在赣南、赣东等地盛行，八十大王傩面作为其中的代表之一，具有鲜明的地方特色2。八十大王傩面通常以木质雕刻，形象威猛夸张，色彩浓烈，带有狰狞或威严的表情，象征驱邪逐疫的神力。在古代傩仪中，傩面具扮演着沟通人神的媒介角色，八十大王傩面可能代表一位镇守四方、驱除邪祟的神灵或武将形象。部分八十大王傩面作为文物或非遗展品被收藏，如贵州省民族博物馆就藏有一件当代江西八十大王傩面（藏品登记号：GM.1.7755）" },
+    { name: "太阳神", img: "images/太阳神.jpg", intro: "太阳神傩面是中国傩文化中的一种重要面具，通常与太阳崇拜、驱邪祈福的宗教仪式相关。其造型特征和文化内涵在不同地区的傩文化中有所差异，但普遍具有神圣、威严的象征意义。太阳神傩面的起源可以追溯到远古时期的自然崇拜，尤其是对太阳的信仰。" },
+    { name: "小鬼", img: "images/小鬼.jpg", intro: "小鬼傩面是中国傩文化中的一种重要面具类型，主要用于傩戏、傩舞等民间祭祀和驱邪仪式中，代表阴间鬼卒或邪祟形象，具有驱邪镇煞的象征意义。小鬼傩面源于古代巫傩文化，属于傩戏中的“凶神”或“阴间鬼差”角色，如黑白无常、牛头马面、判官小鬼等。在傩仪中，小鬼面具通常用于扮演邪祟或鬼卒，通过夸张狰狞的形象震慑恶灵，达到驱邪逐疫的目的。" },
+  ];
+
+  let correctIndex = -1;
+  let selectedMask = null;
+
+  function startGame() {
+    const boxes = document.querySelectorAll(".game-box");
+    const imgs = document.querySelectorAll(".game-img");
+    imgs.forEach((img) => (img.style.display = "none"));
+    correctIndex = Math.floor(Math.random() * 9);
+    selectedMask = masks[Math.floor(Math.random() * masks.length)];
+
+    for (let i = 0; i < boxes.length; i++) {
+      const img = boxes[i].querySelector("img");
+      if (i === correctIndex) {
+        img.src = selectedMask.img;
+      } else {
+        const wrongMask = masks.filter((m) => m !== selectedMask)[Math.floor(Math.random() * 2)];
+        img.src = wrongMask.img;
+      }
+    }
+  }
+
+  function checkBox(el) {
+    const img = el.querySelector("img");
+    img.style.display = "block";
+    const id = parseInt(el.getAttribute("data-id"));
+    if (id === correctIndex) {
+      document.getElementById("maskInfo").innerText = `🎭 你找到了：${selectedMask.name}\n📖 简介：${selectedMask.intro}`;
+      document.getElementById("maskImage").src = selectedMask.img;
+      new bootstrap.Modal(document.getElementById("resultModal")).show();
+    }
+  }
+
+  window.onload = startGame;
+</script>
+
+<!-- 星空背景 JS -->
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function initStars(count) {
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        delta: Math.random() * 0.02
+      });
+    }
+  }
+
+  function animateStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let star of stars) {
+      star.alpha += star.delta;
+      if (star.alpha <= 0 || star.alpha >= 1) star.delta = -star.delta;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
+      ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(animateStars);
+  }
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initStars(100);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  animateStars();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
