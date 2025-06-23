@@ -1,26 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>傩韵新章 - 傩文化记忆游戏</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap"
+    rel="stylesheet"
+  />
   <style>
     :root {
-      --bg-color: #1A1C1A;
-      --gold: #8E7C58;
-      --green: #4B5650;
-      --beige: #FBE9BB;
+      --bg-color: #1a1c1a;
+      --gold: #8e7c58;
+      --green: #4b5650;
+      --beige: #fbe9bb;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       height: 100%;
       background-color: var(--bg-color);
       color: var(--beige);
-      font-family: 'Noto Serif SC', serif;
+      font-family: "Noto Serif SC", serif;
     }
 
     #stars {
@@ -40,10 +47,10 @@
     }
 
     .main-title {
-      font-family: 'Great Vibes', cursive;
+      font-family: "Great Vibes", cursive;
       font-size: 70px;
       margin: 20px;
-      background: linear-gradient(135deg, #FBE9BB, #8E7C58);
+      background: linear-gradient(135deg, #fbe9bb, #8e7c58);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -84,7 +91,8 @@
       transform: rotateY(180deg);
     }
 
-    .card-front, .card-back {
+    .card-front,
+    .card-back {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -103,16 +111,24 @@
       background-color: var(--gold);
       transform: rotateY(180deg);
       flex-direction: column;
+      color: #1a1c1a;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 5px;
+      text-align: center;
     }
 
     .card-image {
       max-height: 60px;
       margin-bottom: 5px;
+      user-select: none;
+      pointer-events: none;
     }
 
     .game-message {
       margin: 15px;
       font-size: 18px;
+      min-height: 24px;
     }
 
     .restart-btn {
@@ -130,216 +146,306 @@
   </style>
 </head>
 <body>
+  <canvas id="stars"></canvas>
 
-<canvas id="stars"></canvas>
+  <div class="layout">
+    <div class="main-title">Nuó Culture</div>
 
-<div class="layout">
-  <div class="main-title">Nuó Culture</div>
+    <div class="game-info">
+      <div class="info-item">
+        <div>时间</div>
+        <div id="timer">60</div>
+      </div>
+      <div class="info-item">
+        <div>得分</div>
+        <div id="score">0</div>
+      </div>
+      <div class="info-item">
+        <div>配对</div>
+        <div id="matches">0/8</div>
+      </div>
+    </div>
 
-  <div class="game-info">
-    <div class="info-item"><div>时间</div><div id="timer">60</div></div>
-    <div class="info-item"><div>得分</div><div id="score">0</div></div>
-    <div class="info-item"><div>配对</div><div id="matches">0/3</div></div>
+    <div class="game-message" id="gameMessage">点击任意卡片开始游戏！</div>
+
+    <div class="game-container" id="gameContainer"></div>
+
+    <button class="restart-btn" id="restart-btn">重新开始</button>
   </div>
 
-  <div class="game-message" id="gameMessage">点击任意卡片开始游戏！</div>
-
-  <div class="game-container" id="gameContainer"></div>
-
-  <button class="restart-btn" id="restart-btn">重新开始</button>
-</div>
-
-<!-- 模态框 -->
-<div class="modal fade" id="resultModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-light">
-      <div class="modal-header">
-        <h5 class="modal-title">🎭 傩面介绍</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p id="maskInfo">你找到了目标傩面！</p>
-        <img id="maskImage" class="img-fluid mt-2" />
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-light" onclick="restartGame()">再玩一次</button>
+  <!-- 模态框 -->
+  <div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header">
+          <h5 class="modal-title">🎭 傩面介绍</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p id="maskInfo">你找到了目标傩面！</p>
+          <img id="maskImage" class="img-fluid mt-2" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-light" onclick="restartGame()">再玩一次</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-const gameImages = [
-{ id:1,name: "八十大王", img: "images/八十大王.jpg", intro: "八十大王傩面主要与江西傩文化相关，属于江西傩面具的一种。江西傩舞历史悠久，尤其在赣南、赣东等地盛行，八十大王傩面作为其中的代表之一，具有鲜明的地方特色2。八十大王傩面通常以木质雕刻，形象威猛夸张，色彩浓烈，带有狰狞或威严的表情，象征驱邪逐疫的神力。在古代傩仪中，傩面具扮演着沟通人神的媒介角色，八十大王傩面可能代表一位镇守四方、驱除邪祟的神灵或武将形象。部分八十大王傩面作为文物或非遗展品被收藏，如贵州省民族博物馆就藏有一件当代江西八十大王傩面（藏品登记号：GM.1.7755）" },
-    { id:2,name: "太阳神", img: "images/太阳神.jpg", intro: "太阳神傩面是中国傩文化中的一种重要面具，通常与太阳崇拜、驱邪祈福的宗教仪式相关。其造型特征和文化内涵在不同地区的傩文化中有所差异，但普遍具有神圣、威严的象征意义。太阳神傩面的起源可以追溯到远古时期的自然崇拜，尤其是对太阳的信仰。" },
-    {id:3 name: "小鬼", img: "images/小鬼.jpg", intro: "小鬼傩面是中国傩文化中的一种重要面具类型，主要用于傩戏、傩舞等民间祭祀和驱邪仪式中，代表阴间鬼卒或邪祟形象，具有驱邪镇煞的象征意义。小鬼傩面源于古代巫傩文化，属于傩戏中的“凶神”或“阴间鬼差”角色，如黑白无常、牛头马面、判官小鬼等。在傩仪中，小鬼面具通常用于扮演邪祟或鬼卒，通过夸张狰狞的形象震慑恶灵，达到驱邪逐疫的目的。" },
-];
+  <script>
+    const gameImages = [
+      {
+        id: 1,
+        name: "八十大王",
+        img: "images/八十大王.jpg",
+        intro:
+          "八十大王傩面主要与江西傩文化相关，属于江西傩面具的一种。江西傩舞历史悠久，尤其在赣南、赣东等地盛行，八十大王傩面作为其中的代表之一，具有鲜明的地方特色。八十大王傩面通常以木质雕刻，形象威猛夸张，色彩浓烈，带有狰狞或威严的表情，象征驱邪逐疫的神力。在古代傩仪中，傩面具扮演着沟通人神的媒介角色，八十大王傩面可能代表一位镇守四方、驱除邪祟的神灵或武将形象。部分八十大王傩面作为文物或非遗展品被收藏，如贵州省民族博物馆就藏有一件当代江西八十大王傩面（藏品登记号：GM.1.7755）",
+      },
+      {
+        id: 2,
+        name: "太阳神",
+        img: "images/太阳神.jpg",
+        intro:
+          "太阳神傩面是中国傩文化中的一种重要面具，通常与太阳崇拜、驱邪祈福的宗教仪式相关。其造型特征和文化内涵在不同地区的傩文化中有所差异，但普遍具有神圣、威严的象征意义。太阳神傩面的起源可以追溯到远古时期的自然崇拜，尤其是对太阳的信仰。",
+      },
+      {
+        id: 3,
+        name: "小鬼",
+        img: "images/小鬼.jpg",
+        intro:
+          "小鬼傩面是中国傩文化中的一种重要面具类型，主要用于傩戏、傩舞等民间祭祀和驱邪仪式中，代表阴间鬼卒或邪祟形象，具有驱邪镇煞的象征意义。小鬼傩面源于古代巫傩文化，属于傩戏中的“凶神”或“阴间鬼差”角色，如黑白无常、牛头马面、判官小鬼等。在傩仪中，小鬼面具通常用于扮演邪祟或鬼卒，通过夸张狰狞的形象震慑恶灵，达到驱邪逐疫的目的。",
+      },
+      {
+        id: 4,
+        name: "开山",
+        img: "images/开山.jpg",
+        intro:
+          "开山傩面是中国傩文化中的重要面具之一，主要用于傩戏、傩舞等民间祭祀和驱邪仪式中，通常代表开山神、开路先锋或驱邪镇煞的神灵形象。开山傩面源于古代巫傩信仰，象征“开山辟路、驱邪逐疫”的神力。在傩仪中，开山神（或称“开山大将”）是傩戏中的重要角色，负责扫除障碍、驱赶邪祟，为后续神灵或仪式开路。",
+      },
+      {
+        id: 5,
+        name: "押兵元帅",
+        img: "images/押兵元帅.jpg",
+        intro:
+          "押兵元帅是中国傩文化中的一种重要傩面角色，通常出现在傩戏、傩舞等民间祭祀仪式中，象征着统率阴兵、镇守四方、驱邪护境的神将形象。押兵元帅傩面源于古代巫傩信仰，融合了道教神将与民间军事统帅的形象，常见于贵州、湖南、江西等地的傩戏表演中。",
+      },
+      {
+        id: 6,
+        name: "绿面神",
+        img: "images/绿面神.jpg",
+        intro:
+          "“绿面神”是中国傩文化中的一种特殊傩面形象，通常与自然崇拜、道教神祇或民间信仰中的驱邪神灵相关。其名称可能来源于面具的绿色主色调，象征生命、自然或某种神秘力量。",
+      },
+      {
+        id: 7,
+        name: "雷公",
+        img: "images/雷公.jpg",
+        intro:
+          "雷公傩面是中国傩文化中的重要面具形象之一，象征着雷电之神，具有驱邪镇煞、呼风唤雨的神力。雷公傩面源于中国古代的自然崇拜与道教信仰，雷公被视为掌管雷电、惩恶扬善的神灵。在傩戏中，雷公面具通常用于驱邪仪式，象征天罚与正义。",
+      },
+      {
+        id: 8,
+        name: "龙须虎",
+        img: "images/龙须虎.jpg",
+        intro:
+          "龙须虎傩面是中国傩戏文化中的一种重要面具形象，主要出现在贵州等地的傩戏表演中，尤其在《封神演义》题材的傩戏中扮演重要角色。龙须虎傩面源于古典小说《封神演义》，在傩戏中扮演周营战将“龙须虎”的角色。",
+      },
+    ];
 
-let score = 0, matches = 0, timeLeft = 60, timer = null;
-let flippedCards = [], canFlip = true;
-let selectedIntro = {};
+    let score = 0,
+      matches = 0,
+      timeLeft = 60,
+      timer = null;
+    let flippedCards = [],
+      canFlip = true;
+    let timerStarted = false;
 
-const container = document.getElementById('gameContainer');
-const scoreEl = document.getElementById('score');
-const timerEl = document.getElementById('timer');
-const matchesEl = document.getElementById('matches');
-const messageEl = document.getElementById('gameMessage');
+    const container = document.getElementById("gameContainer");
+    const scoreEl = document.getElementById("score");
+    const timerEl = document.getElementById("timer");
+    const matchesEl = document.getElementById("matches");
+    const messageEl = document.getElementById("gameMessage");
 
-function shuffleArray(array) {
-  const newArr = [...array, ...array];
-  for (let i = newArr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-  }
-  return newArr;
-}
+    function shuffleArray(array) {
+      const newArr = [...array, ...array];
+      for (let i = newArr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+      }
+      return newArr;
+    }
 
-function createCard(image) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.dataset.id = image.id;
-  card.innerHTML = `
-    <div class="card-inner">
-      <div class="card-front"></div>
-      <div class="card-back">
-        <img class="card-image" src="${image.src}">
-        <div class="card-name">${image.name}</div>
-      </div>
-    </div>`;
-  card.addEventListener('click', flipCard);
-  return card;
-}
+    function createCard(image) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.id = image.id;
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front"></div>
+          <div class="card-back">
+            <img class="card-image" src="${image.img}" alt="${image.name}">
+            <div class="card-name">${image.name}</div>
+          </div>
+        </div>
+      `;
+      card.addEventListener("click", flipCard);
+      return card;
+    }
 
-function flipCard() {
-  if (!canFlip || this.classList.contains('flipped') || flippedCards.length >= 2) return;
+    function flipCard() {
+      if (!canFlip || this.classList.contains("flipped") || flippedCards.length >= 2)
+        return;
 
-  this.classList.add('flipped');
-  flippedCards.push(this);
+      this.classList.add("flipped");
+      flippedCards.push(this);
 
-  if (flippedCards.length === 2) {
-    canFlip = false;
-    const [c1, c2] = flippedCards;
-    if (c1.dataset.id === c2.dataset.id) {
-      matches++;
-      score += 10;
-      updateUI();
-      const matchInfo = gameImages.find(i => i.id == c1.dataset.id);
-      selectedIntro = matchInfo;
-      setTimeout(() => {
-        document.getElementById("maskInfo").innerText = `🎭 你找到了：${matchInfo.name}\n📖 简介：${matchInfo.intro}`;
-        document.getElementById("maskImage").src = matchInfo.src;
-        new bootstrap.Modal(document.getElementById("resultModal")).show();
-      }, 500);
+      if (flippedCards.length === 2) {
+        canFlip = false;
+        const [c1, c2] = flippedCards;
+        if (c1.dataset.id === c2.dataset.id) {
+          matches++;
+          score += 10;
+          updateUI();
+          const matchInfo = gameImages.find((i) => i.id == c1.dataset.id);
+          setTimeout(() => {
+            document.getElementById("maskInfo").innerText = `🎭 你找到了：${matchInfo.name}\n📖 简介：${matchInfo.intro}`;
+            document.getElementById("maskImage").src = matchInfo.img;
+            new bootstrap.Modal(document.getElementById("resultModal")).show();
+          }, 500);
+          flippedCards = [];
+          canFlip = true;
+          if (matches === gameImages.length) endGame(true);
+        } else {
+          setTimeout(() => {
+            c1.classList.remove("flipped");
+            c2.classList.remove("flipped");
+            flippedCards = [];
+            canFlip = true;
+          }, 1000);
+        }
+      }
+    }
+
+    function updateUI() {
+      scoreEl.textContent = score;
+      matchesEl.textContent = `${matches}/${gameImages.length}`;
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      timerEl.textContent = timeLeft;
+      if (timeLeft <= 0) endGame(false);
+    }
+
+    function startTimer() {
+      if (timerStarted) return;
+      timerStarted = true;
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    function endGame(win) {
+      clearInterval(timer);
+      timer = null;
+      timerStarted = false;
+      canFlip = false;
+      messageEl.textContent = win
+        ? `恭喜胜利！得分：${score}`
+        : `⌛ 时间到！得分：${score}`;
+    }
+
+    function initGame() {
+      container.innerHTML = "";
+      score = 0;
+      matches = 0;
+      timeLeft = 60;
       flippedCards = [];
       canFlip = true;
-      if (matches === gameImages.length) endGame(true);
-    } else {
-      setTimeout(() => {
-        c1.classList.remove('flipped');
-        c2.classList.remove('flipped');
-        flippedCards = [];
-        canFlip = true;
-      }, 1000);
+      timerStarted = false;
+      updateUI();
+      timerEl.textContent = timeLeft;
+      messageEl.textContent = "点击任意卡片开始游戏！";
+      clearInterval(timer);
+      timer = null;
+
+      const shuffled = shuffleArray(gameImages);
+      shuffled.forEach((img) => {
+        const card = createCard(img);
+        container.appendChild(card);
+      });
     }
-  }
-}
 
-function updateUI() {
-  scoreEl.textContent = score;
-  matchesEl.textContent = `${matches}/${gameImages.length}`;
-}
+    function restartGame() {
+      bootstrap.Modal.getInstance(document.getElementById("resultModal")).hide();
+      initGame();
+      startTimer();
+    }
 
-function updateTimer() {
-  timeLeft--;
-  timerEl.textContent = timeLeft;
-  if (timeLeft <= 0) endGame(false);
-}
+    initGame();
 
-function startTimer() {
-  timer = setInterval(updateTimer, 1000);
-}
-
-function endGame(win) {
-  clearInterval(timer);
-  canFlip = false;
-  messageEl.textContent = win ? `恭喜胜利！得分：${score}` : `⌛ 时间到！得分：${score}`;
-}
-
-function initGame() {
-  container.innerHTML = '';
-  score = 0; matches = 0; timeLeft = 60; flippedCards = []; canFlip = true;
-  updateUI(); timerEl.textContent = timeLeft; messageEl.textContent = '点击任意卡片开始游戏！';
-  clearInterval(timer);
-
-  const shuffled = shuffleArray(gameImages);
-  shuffled.forEach(img => {
-    const card = createCard(img);
-    container.appendChild(card);
-  });
-}
-
-function restartGame() {
-  bootstrap.Modal.getInstance(document.getElementById("resultModal")).hide();
-  initGame();
-  startTimer();
-}
-
-initGame();
-
-document.getElementById('restart-btn').addEventListener('click', () => {
-  initGame();
-  startTimer();
-});
-
-container.addEventListener('click', function(e) {
-  if (e.target.closest('.card') && !timer) {
-    startTimer();
-  }
-}, { once: true });
-</script>
-
-<!-- 星空动画 -->
-<script>
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let stars = [];
-
-function initStars(n) {
-  stars = [];
-  for (let i = 0; i < n; i++) {
-    stars.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 1.5,
-      alpha: Math.random(),
-      delta: Math.random() * 0.02
+    document.getElementById("restart-btn").addEventListener("click", () => {
+      initGame();
+      startTimer();
     });
-  }
-}
 
-function animateStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let s of stars) {
-    s.alpha += s.delta;
-    if (s.alpha <= 0 || s.alpha >= 1) s.delta = -s.delta;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
-    ctx.fill();
-  }
-  requestAnimationFrame(animateStars);
-}
+    // 点击任意卡片启动计时器（只启动一次）
+    container.addEventListener(
+      "click",
+      function (e) {
+        if (e.target.closest(".card") && !timerStarted) {
+          startTimer();
+        }
+      },
+      { once: false }
+    );
+  </script>
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  initStars(100);
-}
+  <!-- 星空动画 -->
+  <script>
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
 
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-animateStars();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    function initStars(n) {
+      stars = [];
+      for (let i = 0; i < n; i++) {
+        stars.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          r: Math.random() * 1.5,
+          alpha: Math.random(),
+          delta: Math.random() * 0.02,
+        });
+      }
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let s of stars) {
+        s.alpha += s.delta;
+        if (s.alpha <= 0 || s.alpha >= 1) s.delta = -s.delta;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(animateStars);
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars(100);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animateStars();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
