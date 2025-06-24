@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>NuóCulture - 傩韵新章</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #1a1c1a;
+      --gold: #8e7c58;
+      --green: #4b5650;
+      --beige: #fbe9bb;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--beige);
+      font-family: "Noto Serif SC", serif;
+    }
+    .side-title {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 24px;
+      color: var(--gold);
+      font-weight: bold;
+      padding: 20px;
+    }
+    .main-title {
+      font-family: "Great Vibes", cursive;
+      font-size: 72px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--beige), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 20px;
+    }
+    .section {
+      padding: 40px 20px;
+    }
+    .comment-box {
+      background-color: var(--green);
+      border-radius: 10px;
+      padding: 20px;
+      color: white;
+    }
+    .comment-list {
+      margin-top: 20px;
+    }
+    .comment {
+      border-bottom: 1px solid var(--gold);
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <div class="side-title">傩韵新章 非遗傩文化数字化保护</div>
+    <div class="flex-grow-1">
+      <div class="main-title">NuóCulture</div>
+
+      <div class="section" id="memory-game-section">
+        <iframe src="./game.html" width="100%" height="650" style="border: none; border-radius: 10px;"></iframe>
+      </div>
+
+      <div class="section" id="create-mask-section">
+        <h2>🎨 创造我的傩面</h2>
+        <form id="create-mask-form">
+          <div class="mb-3">
+            <label class="form-label">描述你的傩面形象</label>
+            <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-warning">生成傩面</button>
+        </form>
+        <div class="mt-4" id="generated-mask"></div>
+      </div>
+
+      <div class="section" id="comment-section">
+        <h2>💬 留言区</h2>
+        <form id="comment-form">
+          <div class="mb-2">
+            <label class="form-label">您的名字</label>
+            <input type="text" class="form-control" id="user-name" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">留言内容</label>
+            <textarea class="form-control" id="user-comment" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-light">提交留言</button>
+        </form>
+        <div class="comment-list" id="comments"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA'; // 在此填写你的 CogView-4 API Key
+    const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
+
+    document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const prompt = document.getElementById("prompt").value.trim();
+      const resultDiv = document.getElementById("generated-mask");
+      resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
+
+      try {
+        const res = await fetch(cogviewApiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cogviewApiKey}`
+          },
+          body: JSON.stringify({
+            model: 'cogview-4-250304',
+            prompt: prompt,
+            size: '1024x1024',
+            quality: 'standard'
+          })
+        });
+        const data = await res.json();
+        if (data?.data?.[0]?.url) {
+          resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" class="img-fluid rounded" alt="生成傩面">`;
+        } else {
+          resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
+      }
+    });
+
+    document.getElementById("comment-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("user-name").value;
+      const comment = document.getElementById("user-comment").value;
+      if (name && comment) {
+        const container = document.getElementById("comments");
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerHTML = `<strong>${name}</strong>: ${comment}`;
+        container.prepend(div);
+        document.getElementById("comment-form").reset();
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
