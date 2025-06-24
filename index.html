@@ -8,81 +8,79 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-color: #1a1c1a;
-      --gold: #8e7c58;
-      --green: #4b5650;
-      --beige: #fbe9bb;
+      --bg-color: #fffbea;
+      --gold-light: #fffbea;
+      --gold-mid: #f3e9b7;
+      --gold-dark: #d6ba47;
+      --gold-shadow: rgba(214, 186, 71, 0.3);
+      --text-dark-gold: #4b4b3f;
       --btn-text-color: #222;
     }
     html, body {
       margin: 0; padding: 0;
       height: 100%;
       background-color: var(--bg-color);
-      color: var(--beige);
+      color: var(--text-dark-gold);
       font-family: "Noto Serif SC", serif;
       overflow-x: hidden;
       position: relative;
     }
-    /* 背景canvas铺满 */
+    /* 背景canvas */
     #background-canvas {
       position: fixed;
       top:0; left:0;
       width: 100vw; height: 100vh;
       z-index: -1;
-      background: linear-gradient(135deg, #1a1c1a 0%, #2a2e2a 100%);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-mid));
     }
-
     /* 侧边竖排标题 */
     .side-title {
       writing-mode: vertical-rl;
       text-orientation: mixed;
       font-size: 24px;
-      color: var(--gold);
+      color: var(--gold-dark);
       font-weight: bold;
       padding: 20px;
       user-select: none;
     }
-
     /* 顶部主标题 */
     .main-title {
       font-family: "Great Vibes", cursive;
       font-size: 72px;
       text-align: center;
-      background: linear-gradient(135deg, var(--beige), var(--gold));
+      background: linear-gradient(135deg, var(--gold-mid), var(--gold-dark));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-top: 20px;
       user-select: none;
     }
-
-    /* 顶部按钮组 */
+    /* 顶部按钮 */
     .btn-gradient {
       color: var(--btn-text-color);
       font-weight: 600;
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef, #fdfefe);
+      background: linear-gradient(135deg, #fdfdf7, #f9f7e3, #fffbea);
       background-size: 300% 300%;
-      border: 1px solid #ddd;
+      border: 1px solid #d6ba47;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgb(255 255 255 / 0.5);
+      box-shadow: 0 4px 8px var(--gold-shadow);
       transition: background-position 0.6s ease, box-shadow 0.3s ease;
       text-align: center;
       min-width: 160px;
+      user-select: none;
     }
     .btn-gradient small {
       font-size: 0.7rem;
-      color: #555;
+      color: #927d3e;
       display: block;
       margin-top: 2px;
     }
     .btn-gradient:hover,
     .btn-gradient:focus {
       background-position: 100% 0;
-      box-shadow: 0 6px 15px rgb(255 255 255 / 0.8);
-      color: #111;
+      box-shadow: 0 6px 15px rgba(214, 186, 71, 0.9);
+      color: #4b4b3f;
       text-decoration: none;
     }
-
-    /* 顶部按钮容器 居中 */
     .btn-container {
       display: flex;
       justify-content: center;
@@ -90,7 +88,6 @@
       margin: 40px 0 60px 0;
       flex-wrap: wrap;
     }
-
     /* 主体内容容器 */
     .content-container {
       display: flex;
@@ -100,18 +97,17 @@
       margin: 0 auto 80px auto;
       flex-wrap: wrap;
     }
-
-    /* 左右区域 */
+    /* 左右面板 */
     .left-section, .right-section {
-      background-color: var(--green);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-mid), var(--gold-light));
       border-radius: 15px;
       padding: 30px 25px;
-      box-shadow: 0 0 20px rgb(255 255 255 / 0.15);
+      box-shadow: 0 0 20px var(--gold-shadow);
       flex: 1 1 450px;
       min-width: 300px;
       max-height: 700px;
       overflow-y: auto;
-      color: #f0f0f0;
+      color: var(--text-dark-gold);
     }
     /* 滚动条美化 */
     .left-section::-webkit-scrollbar,
@@ -120,48 +116,55 @@
     }
     .left-section::-webkit-scrollbar-thumb,
     .right-section::-webkit-scrollbar-thumb {
-      background: var(--gold);
+      background: var(--gold-dark);
       border-radius: 4px;
     }
-
-    /* 分区标题 */
-    h2 {
+    /* 标题样式 */
+    .section-title {
       font-family: "Great Vibes", cursive;
-      font-size: 36px;
-      margin-bottom: 25px;
-      color: var(--beige);
+      font-size: 38px;
+      color: var(--gold-dark);
       user-select: none;
-      border-bottom: 2px solid var(--gold);
-      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gold-dark);
+      padding-bottom: 8px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: baseline;
+      gap: 15px;
     }
-
-    /* 表单控件圆润 */
+    .section-title small {
+      font-family: "Noto Serif SC", serif;
+      font-size: 1rem;
+      color: #927d3e;
+      user-select: none;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+    /* 表单圆润美观 */
     textarea.form-control, input.form-control {
       border-radius: 12px;
-      background-color: #39453f;
-      border: 1px solid var(--gold);
-      color: #f0f0f0;
+      background-color: #fffdea;
+      border: 1px solid var(--gold-dark);
+      color: var(--text-dark-gold);
     }
     textarea.form-control::placeholder, input.form-control::placeholder {
-      color: #cfcfcf;
+      color: #b6a45e;
       opacity: 0.8;
     }
     textarea.form-control:focus, input.form-control:focus {
-      background-color: #455647;
-      border-color: var(--beige);
-      color: var(--beige);
-      box-shadow: 0 0 10px var(--gold);
+      background-color: #f7f3c9;
+      border-color: var(--gold-dark);
+      color: var(--gold-dark);
+      box-shadow: 0 0 10px var(--gold-dark);
     }
-
-    /* 生成傩面显示区 */
+    /* 生成图片样式 */
     #generated-mask img {
       max-width: 100%;
       border-radius: 10px;
-      box-shadow: 0 0 15px var(--gold);
+      box-shadow: 0 0 15px var(--gold-dark);
       margin-top: 15px;
       user-select: none;
     }
-
     /* 留言板样式 */
     .comment-list {
       margin-top: 20px;
@@ -169,53 +172,59 @@
       overflow-y: auto;
     }
     .comment {
-      border-bottom: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold-dark);
       padding: 12px 8px;
       font-size: 0.9rem;
       line-height: 1.4;
+      color: var(--gold-dark);
     }
     .comment strong {
-      color: var(--beige);
+      color: var(--gold-dark);
     }
-
-    /* 提交按钮 */
+    /* 按钮样式 */
     button.btn-warning {
       border-radius: 10px;
       padding: 8px 25px;
       font-weight: 600;
-      box-shadow: 0 0 12px rgb(142 124 88 / 0.7);
+      box-shadow: 0 0 12px rgba(214,186,71,0.7);
       transition: box-shadow 0.3s ease;
+      color: var(--text-dark-gold);
+      background-color: var(--gold-mid);
+      border: 1px solid var(--gold-dark);
     }
     button.btn-warning:hover {
-      box-shadow: 0 0 20px rgb(142 124 88 / 1);
+      box-shadow: 0 0 20px rgba(214,186,71,1);
+      background-color: var(--gold-dark);
+      color: #fffbea;
+      border-color: var(--gold-dark);
     }
-
     button.btn-light {
       border-radius: 10px;
       font-weight: 600;
       padding: 8px 25px;
-      color: var(--bg-color);
-      background: #fdfefe;
-      box-shadow: 0 0 12px rgb(142 124 88 / 0.7);
+      color: var(--gold-dark);
+      background: #fffbea;
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 0 12px rgba(214,186,71,0.7);
       transition: box-shadow 0.3s ease;
     }
     button.btn-light:hover {
-      box-shadow: 0 0 20px rgb(142 124 88 / 1);
-      color: var(--bg-color);
-      background: #f9f9f9;
+      box-shadow: 0 0 20px rgba(214,186,71,1);
+      background: var(--gold-dark);
+      color: #fffbea;
+      border-color: var(--gold-dark);
     }
   </style>
 </head>
 <body>
 
-  <!-- 背景canvas -->
-  <canvas id="background-canvas"></canvas>
+  <canvas id="background-canvas" aria-hidden="true"></canvas>
 
   <div class="d-flex" style="min-height: 100vh;">
-    <div class="side-title">傩韵新章 非遗傩文化数字化保护</div>
+    <div class="side-title" aria-label="网站侧边标题">傩韵新章 非遗傩文化数字化保护</div>
     <div class="flex-grow-1 d-flex flex-column align-items-center">
 
-      <div class="main-title">NuóCulture</div>
+      <div class="main-title" aria-label="网站主标题">NuóCulture</div>
 
       <!-- 顶部按钮组 -->
       <div class="btn-container" role="group" aria-label="主页功能导航按钮">
@@ -230,25 +239,31 @@
         </a>
       </div>
 
-      <!-- 主体内容区 -->
+      <!-- 主体内容 -->
       <div class="content-container">
 
-        <!-- 左半边：创造我的傩面 -->
+        <!-- 左半边 创造我的傩面 -->
         <section class="left-section" id="create-mask-section" aria-label="创造我的傩面">
-          <h2>创造我的傩面</h2>
+          <h2 class="section-title">
+            创造我的傩面
+            <small>Create My Mask</small>
+          </h2>
           <form id="create-mask-form">
             <div class="mb-3">
               <label for="prompt" class="form-label">描述你的傩面形象</label>
-              <textarea class="form-control" id="prompt" rows="3" placeholder="如：傩面具，红色、愤怒、带有龙纹..." required></textarea>
+              <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..." required></textarea>
             </div>
             <button type="submit" class="btn btn-warning">生成傩面</button>
           </form>
           <div class="mt-4" id="generated-mask" aria-live="polite" aria-atomic="true"></div>
         </section>
 
-        <!-- 右半边：留言区 -->
+        <!-- 右半边 留言区 -->
         <section class="right-section" id="comment-section" aria-label="留言区">
-          <h2>留言区</h2>
+          <h2 class="section-title">
+            留言区
+            <small>Comments</small>
+          </h2>
           <form id="comment-form">
             <div class="mb-3">
               <label for="user-name" class="form-label">您的名字</label>
@@ -267,118 +282,123 @@
     </div>
   </div>
 
-  <script>
-    // CogView API配置信息（替换为你的Key）
-    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
-    const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
+<script>
+  // CogView API 配置，替换成你的 key
+  const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
+  const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
 
-    // 生成傩面表单提交
-    document.getElementById("create-mask-form").addEventListener("submit", async function(e){
-      e.preventDefault();
-      const prompt = document.getElementById("prompt").value.trim();
-      const resultDiv = document.getElementById("generated-mask");
-      if(!prompt){
-        resultDiv.innerHTML = '<p class="text-danger">请输入描述内容。</p>';
-        return;
-      }
-      resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
-
-      try {
-        const res = await fetch(cogviewApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${cogviewApiKey}`
-          },
-          body: JSON.stringify({
-            model: 'cogview-4-250304',
-            prompt: prompt,
-            size: '1024x1024',
-            quality: 'standard'
-          })
-        });
-        const data = await res.json();
-        if(data?.data?.[0]?.url){
-          resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面图像" />`;
-        } else {
-          resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
-        }
-      } catch(err){
-        console.error(err);
-        resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
-      }
-    });
-
-    // 留言表单提交
-    document.getElementById("comment-form").addEventListener("submit", function(e){
-      e.preventDefault();
-      const name = document.getElementById("user-name").value.trim();
-      const comment = document.getElementById("user-comment").value.trim();
-      if(name && comment){
-        const container = document.getElementById("comments");
-        const div = document.createElement("div");
-        div.className = "comment";
-        div.innerHTML = `<strong>${name}</strong>: ${comment}`;
-        container.prepend(div);
-        this.reset();
-      }
-    });
-
-    // 简单粒子背景动画
-    const canvas = document.getElementById('background-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let width, height;
-
-    function initCanvas() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      particles = [];
-      for(let i=0; i<80; i++){
-        particles.push({
-          x: Math.random()*width,
-          y: Math.random()*height,
-          size: 1 + Math.random()*2,
-          speedX: (Math.random()-0.5)*0.3,
-          speedY: (Math.random()-0.5)*0.3,
-          opacity: 0.3 + Math.random()*0.5,
-          direction: Math.random() > 0.5 ? 1 : -1,
-          angle: Math.random()*Math.PI*2
-        });
-      }
+  // 生成傩面功能
+  document.getElementById("create-mask-form").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const prompt = document.getElementById("prompt").value.trim();
+    const resultDiv = document.getElementById("generated-mask");
+    if(!prompt){
+      resultDiv.innerHTML = '<p class="text-danger">请输入描述内容。</p>';
+      return;
     }
-    function draw() {
-      ctx.clearRect(0, 0, width, height);
-      for(let p of particles){
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.angle += 0.02 * p.direction;
-        // 边界反弹
-        if(p.x < 0 || p.x > width) p.speedX *= -1;
-        if(p.y < 0 || p.y > height) p.speedY *= -1;
-        // 漂浮的光晕圆点
-        ctx.beginPath();
-        const glowRadius = 8 + 4 * Math.sin(p.angle);
-        let grad = ctx.createRadialGradient(p.x, p.y, glowRadius*0.3, p.x, p.y, glowRadius);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${p.opacity})`);
-        grad.addColorStop(1, 'rgba(142, 124, 88, 0)');
-        ctx.fillStyle = grad;
-        ctx.arc(p.x, p.y, glowRadius, 0, Math.PI*2);
-        ctx.fill();
+    resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
+
+    try {
+      const res = await fetch(cogviewApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cogviewApiKey}`
+        },
+        body: JSON.stringify({
+          model: 'cogview-4-250304',
+          prompt: prompt,
+          size: '1024x1024',
+          quality: 'standard'
+        })
+      });
+      const data = await res.json();
+      if(data?.data?.[0]?.url){
+        resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面图像" />`;
+      } else {
+        resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
       }
-      requestAnimationFrame(draw);
+    } catch(err){
+      console.error(err);
+      resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
     }
+  });
 
-    window.addEventListener('resize', () => {
-      initCanvas();
-    });
+  // 留言功能
+  document.getElementById("comment-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    const name = document.getElementById("user-name").value.trim();
+    const comment = document.getElementById("user-comment").value.trim();
+    if(name && comment){
+      const container = document.getElementById("comments");
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerHTML = `<strong>${name}</strong>: ${comment}`;
+      container.prepend(div);
+      this.reset();
+    }
+  });
 
+  // 背景闪烁金色小光点动画
+  const canvas = document.getElementById('background-canvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let stars = [];
+
+  function initCanvas(){
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    stars = [];
+    for(let i=0; i<120; i++){
+      stars.push({
+        x: Math.random()*width,
+        y: Math.random()*height,
+        radius: Math.random()*1.2 + 0.3,
+        maxAlpha: 0.6 + Math.random()*0.4,
+        alpha: 0,
+        alphaSpeed: 0.005 + Math.random()*0.015,
+        increasing: Math.random() > 0.5
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, width, height);
+    for(let star of stars){
+      if(star.increasing){
+        star.alpha += star.alphaSpeed;
+        if(star.alpha >= star.maxAlpha) star.increasing = false;
+      } else {
+        star.alpha -= star.alphaSpeed;
+        if(star.alpha <= 0) star.increasing = true;
+      }
+      const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.radius*6);
+      gradient.addColorStop(0, `rgba(214,186,71,${star.alpha})`);
+      gradient.addColorStop(1, 'rgba(214,186,71,0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius*6, 0, Math.PI*2);
+      ctx.fill();
+      // 中心小点
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(214,186,71,${star.alpha})`;
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => {
     initCanvas();
-    draw();
-  </script>
+  });
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  initCanvas();
+  draw();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
