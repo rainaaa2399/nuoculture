@@ -9,7 +9,7 @@
   <style>
     :root {
       --bg-color: #222222;
-      --gold: #FBE9BB;
+      --gold: #B5A166;
       --green-gray: #77725E;
       --brown-dark: #4C453B;
       --silver-light: #fefefe;
@@ -134,8 +134,7 @@
           <form id="create-mask-form">
             <div class="mb-3">
               <label class="form-label">描述你的傩面形象</label>
-    
-              <textarea class="form-control" id="prompt" rows="3" placeholder="我的傩面具：颜色，情绪，纹样。"></textarea>
+              <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..."></textarea>
             </div>
             <button type="submit" class="btn btn-warning">生成傩面</button>
           </form>
@@ -160,20 +159,10 @@
     </div>
   </div>
   <script>
-  // CogView API 配置，替换成你的 key
-  const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
-  const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
+    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
+    const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
 
-  // 生成傩面功能
-  document.getElementById("create-mask-form").addEventListener("submit", async function(e){
-    e.preventDefault();
-    const prompt = document.getElementById("prompt").value.trim();
-    const resultDiv = document.getElementById("generated-mask");
-    if(!prompt){
-      resultDiv.innerHTML = '<p class="text-danger">请输入描述内容。</p>';
-      return;
-    }
-  document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
+   document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
   e.preventDefault();
   const userPrompt = document.getElementById("prompt").value.trim();
   const hiddenPrompt = "插画风格的傩面具，";
@@ -182,109 +171,46 @@
   const resultDiv = document.getElementById("generated-mask");
   resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
 
-  try {
-    const res = await fetch("https://open.bigmodel.cn/api/paas/v4/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA"
-      },
-      body: JSON.stringify({
-        model: "cogview-4-250304",
-        prompt: finalPrompt,
-        size: "1024x1024",
-        quality: "standard"
-      })
+      try {
+        const res = await fetch(cogviewApiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cogviewApiKey}`
+          },
+          body: JSON.stringify({
+            model: 'cogview-4-250304',
+            prompt: prompt,
+            size: '1024x1024',
+            quality: 'standard'
+          })
+        });
+        const data = await res.json();
+        if (data?.data?.[0]?.url) {
+          resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" class="img-fluid rounded" alt="生成傩面">`;
+        } else {
+          resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
+      }
     });
 
-    const data = await res.json();
-    if (data?.data?.[0]?.url) {
-      resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面" class="img-fluid rounded">`;
-    } else {
-      resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
-    }
-  } catch (err) {
-    console.error(err);
-    resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
-  }
-});
-
-
-  // 留言功能
-  document.getElementById("comment-form").addEventListener("submit", function(e){
-    e.preventDefault();
-    const name = document.getElementById("user-name").value.trim();
-    const comment = document.getElementById("user-comment").value.trim();
-    if(name && comment){
-      const container = document.getElementById("comments");
-      const div = document.createElement("div");
-      div.className = "comment";
-      div.innerHTML = `<strong>${name}</strong>: ${comment}`;
-      container.prepend(div);
-      this.reset();
-    }
-  });
-
-  // 背景闪烁金色小光点动画
-  const canvas = document.getElementById('background-canvas');
-  const ctx = canvas.getContext('2d');
-  let width, height;
-  let stars = [];
-
-  function initCanvas(){
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-    stars = [];
-    for(let i=0; i<120; i++){
-      stars.push({
-        x: Math.random()*width,
-        y: Math.random()*height,
-        radius: Math.random()*1.2 + 0.3,
-        maxAlpha: 0.6 + Math.random()*0.4,
-        alpha: 0,
-        alphaSpeed: 0.005 + Math.random()*0.015,
-        increasing: Math.random() > 0.5
-      });
-    }
-  }
-
-  function draw(){
-    ctx.clearRect(0, 0, width, height);
-    for(let star of stars){
-      if(star.increasing){
-        star.alpha += star.alphaSpeed;
-        if(star.alpha >= star.maxAlpha) star.increasing = false;
-      } else {
-        star.alpha -= star.alphaSpeed;
-        if(star.alpha <= 0) star.increasing = true;
+    document.getElementById("comment-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("user-name").value;
+      const comment = document.getElementById("user-comment").value;
+      if (name && comment) {
+        const container = document.getElementById("comments");
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerHTML = `<strong>${name}</strong>: ${comment}`;
+        container.prepend(div);
+        document.getElementById("comment-form").reset();
       }
-      const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.radius*6);
-      gradient.addColorStop(0, `rgba(214,186,71,${star.alpha})`);
-      gradient.addColorStop(1, 'rgba(214,186,71,0)');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.radius*6, 0, Math.PI*2);
-      ctx.fill();
-      // 中心小点
-      ctx.beginPath();
-      ctx.fillStyle = `rgba(214,186,71,${star.alpha})`;
-      ctx.arc(star.x, star.y, star.radius, 0, Math.PI*2);
-      ctx.fill();
-    }
-    requestAnimationFrame(draw);
-  }
-
-  window.addEventListener('resize', () => {
-    initCanvas();
-  });
-
-  initCanvas();
-  draw();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
