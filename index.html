@@ -53,6 +53,15 @@
       border-bottom: 1px solid var(--gold);
       padding: 10px 0;
     }
+    textarea.form-control {
+      border-radius: 12px;
+    }
+    .btn-group-container {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
   </style>
 </head>
 <body>
@@ -60,6 +69,12 @@
     <div class="side-title">傩韵新章 非遗傩文化数字化保护</div>
     <div class="flex-grow-1">
       <div class="main-title">NuóCulture</div>
+
+      <div class="section text-center btn-group-container">
+        <a href="#memory-game-section" class="btn btn-outline-warning">🎮 傩文化记忆游戏</a>
+        <a href="#create-mask-section" class="btn btn-outline-warning">🎨 创造我的傩面</a>
+        <a href="#comment-section" class="btn btn-outline-warning">💬 留言区</a>
+      </div>
 
       <div class="section" id="memory-game-section">
         <iframe src="./game.html" width="100%" height="650" style="border: none; border-radius: 10px;"></iframe>
@@ -96,7 +111,7 @@
   </div>
 
   <script>
-    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA'; // 在此填写你的 CogView-4 API Key
+    const cogviewApiKey = 'YOUR_API_KEY'; // 在此填写你的 CogView-4 API Key
     const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
 
     document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
