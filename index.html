@@ -8,8 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-color: #150909;
-      --gold: #B5A166;
+      --bg-color: #222222;
+      --gold: #FBE9BB;
       --green-gray: #77725E;
       --brown-dark: #4C453B;
       --silver-light: #fefefe;
@@ -134,7 +134,8 @@
           <form id="create-mask-form">
             <div class="mb-3">
               <label class="form-label">描述你的傩面形象</label>
-              <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..."></textarea>
+    
+              <textarea class="form-control" id="prompt" rows="3" placeholder="我的傩面具：颜色，情绪，纹样。"></textarea>
             </div>
             <button type="submit" class="btn btn-warning">生成傩面</button>
           </form>
@@ -172,33 +173,42 @@
       resultDiv.innerHTML = '<p class="text-danger">请输入描述内容。</p>';
       return;
     }
-    resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
+  document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const userPrompt = document.getElementById("prompt").value.trim();
+  const hiddenPrompt = "插画风格的傩面具，";
+  const finalPrompt = hiddenPrompt + userPrompt;
 
-    try {
-      const res = await fetch(cogviewApiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cogviewApiKey}`
-        },
-        body: JSON.stringify({
-          model: 'cogview-4-250304',
-          prompt: prompt,
-          size: '1024x1024',
-          quality: 'standard'
-        })
-      });
-      const data = await res.json();
-      if(data?.data?.[0]?.url){
-        resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面图像" />`;
-      } else {
-        resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
-      }
-    } catch(err){
-      console.error(err);
-      resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
+  const resultDiv = document.getElementById("generated-mask");
+  resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
+
+  try {
+    const res = await fetch("https://open.bigmodel.cn/api/paas/v4/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA"
+      },
+      body: JSON.stringify({
+        model: "cogview-4-250304",
+        prompt: finalPrompt,
+        size: "1024x1024",
+        quality: "standard"
+      })
+    });
+
+    const data = await res.json();
+    if (data?.data?.[0]?.url) {
+      resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面" class="img-fluid rounded">`;
+    } else {
+      resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
     }
-  });
+  } catch (err) {
+    console.error(err);
+    resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
+  }
+});
+
 
   // 留言功能
   document.getElementById("comment-form").addEventListener("submit", function(e){
