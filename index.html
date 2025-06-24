@@ -119,72 +119,46 @@
   </style>
 </head>
 <body>
-
-  <canvas id="background-canvas" aria-hidden="true"></canvas>
-
-  <div class="d-flex" style="min-height: 100vh;">
-    <div class="side-title" aria-label="网站侧边标题">傩韵新章 非遗傩文化数字化保护</div>
-    <div class="flex-grow-1 d-flex flex-column align-items-center">
-
-      <div class="main-title" aria-label="网站主标题">NuóCulture</div>
-
-      <!-- 顶部按钮组 -->
-      <div class="btn-container" role="group" aria-label="主页功能导航按钮">
-        <a href="./game.html" class="btn btn-gradient" role="button" tabindex="0">
-          傩面记忆大挑战<br><small>Mask Memory Challenge</small>
-        </a>
-        <a href="#create-mask-section" class="btn btn-gradient" role="button" tabindex="0">
-          创造我的傩面<br><small>Create My Mask</small>
-        </a>
-        <a href="#comment-section" class="btn btn-gradient" role="button" tabindex="0">
-          留言区<br><small>Comments</small>
-        </a>
+  <div class="d-flex">
+    <div class="side-title">傩韵新章 非遗傩文化数字化保护</div>
+    <div class="flex-grow-1">
+      <div class="main-title">NuóCulture</div>
+      <div class="section text-center btn-group-container">
+        <a href="./game.html">傩面记忆大挑战<br><small>Mask Memory Challenge</small></a>
+        <a href="#create-mask-section">创造我的傩面<br><small>Create My Mask</small></a>
+        <a href="#comment-section">留言区<br><small>Comments</small></a>
       </div>
-
-      <!-- 主体内容 -->
-      <div class="content-container">
-
-        <!-- 左半边 创造我的傩面 -->
-        <section class="left-section" id="create-mask-section" aria-label="创造我的傩面">
-          <h2 class="section-title">
-            创造我的傩面
-            <small>Create My Mask</small>
-          </h2>
+      <div class="section d-flex flex-wrap gap-4 justify-content-center">
+        <div class="left-section" style="flex:1" id="create-mask-section">
+          <h2 class="section-title">创造我的傩面 <small>Create My Mask</small></h2>
           <form id="create-mask-form">
             <div class="mb-3">
-              <label for="prompt" class="form-label">描述你的傩面形象</label>
-              <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..." required></textarea>
+              <label class="form-label">描述你的傩面形象</label>
+              <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..."></textarea>
             </div>
             <button type="submit" class="btn btn-warning">生成傩面</button>
           </form>
-          <div class="mt-4" id="generated-mask" aria-live="polite" aria-atomic="true"></div>
-        </section>
-
-        <!-- 右半边 留言区 -->
-        <section class="right-section" id="comment-section" aria-label="留言区">
-          <h2 class="section-title">
-            留言区
-            <small>Comments</small>
-          </h2>
+          <div class="mt-4" id="generated-mask"></div>
+        </div>
+        <div class="right-section" style="flex:1" id="comment-section">
+          <h2 class="section-title">留言区 <small>Comments</small></h2>
           <form id="comment-form">
             <div class="mb-3">
-              <label for="user-name" class="form-label">您的名字</label>
-              <input type="text" class="form-control" id="user-name" required placeholder="请输入您的名字" />
+              <label class="form-label">您的名字</label>
+              <input type="text" class="form-control" id="user-name" required>
             </div>
             <div class="mb-3">
-              <label for="user-comment" class="form-label">留言内容</label>
-              <textarea class="form-control" id="user-comment" rows="4" required placeholder="请输入留言内容"></textarea>
+              <label class="form-label">留言内容</label>
+              <textarea class="form-control" id="user-comment" rows="3" required></textarea>
             </div>
             <button type="submit" class="btn btn-light">提交留言</button>
           </form>
-          <div class="comment-list" id="comments" aria-live="polite" aria-atomic="true"></div>
-        </section>
-
+          <div class="comment-list" id="comments"></div>
+        </div>
       </div>
     </div>
   </div>
-
-<script>
+  <script>
   // CogView API 配置，替换成你的 key
   const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
   const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
