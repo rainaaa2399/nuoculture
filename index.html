@@ -12,14 +12,27 @@
       --gold: #8e7c58;
       --green: #4b5650;
       --beige: #fbe9bb;
+      --btn-text-color: #222;
     }
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
+      height: 100%;
       background-color: var(--bg-color);
       color: var(--beige);
       font-family: "Noto Serif SC", serif;
+      overflow-x: hidden;
+      position: relative;
     }
+    /* 背景canvas铺满 */
+    #background-canvas {
+      position: fixed;
+      top:0; left:0;
+      width: 100vw; height: 100vh;
+      z-index: -1;
+      background: linear-gradient(135deg, #1a1c1a 0%, #2a2e2a 100%);
+    }
+
+    /* 侧边竖排标题 */
     .side-title {
       writing-mode: vertical-rl;
       text-orientation: mixed;
@@ -27,7 +40,10 @@
       color: var(--gold);
       font-weight: bold;
       padding: 20px;
+      user-select: none;
     }
+
+    /* 顶部主标题 */
     .main-title {
       font-family: "Great Vibes", cursive;
       font-size: 72px;
@@ -36,88 +52,235 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-top: 20px;
+      user-select: none;
     }
-    .section {
-      padding: 40px 20px;
+
+    /* 顶部按钮组 */
+    .btn-gradient {
+      color: var(--btn-text-color);
+      font-weight: 600;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef, #fdfefe);
+      background-size: 300% 300%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgb(255 255 255 / 0.5);
+      transition: background-position 0.6s ease, box-shadow 0.3s ease;
+      text-align: center;
+      min-width: 160px;
     }
-    .comment-box {
+    .btn-gradient small {
+      font-size: 0.7rem;
+      color: #555;
+      display: block;
+      margin-top: 2px;
+    }
+    .btn-gradient:hover,
+    .btn-gradient:focus {
+      background-position: 100% 0;
+      box-shadow: 0 6px 15px rgb(255 255 255 / 0.8);
+      color: #111;
+      text-decoration: none;
+    }
+
+    /* 顶部按钮容器 居中 */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 40px 0 60px 0;
+      flex-wrap: wrap;
+    }
+
+    /* 主体内容容器 */
+    .content-container {
+      display: flex;
+      gap: 40px;
+      padding: 0 20px 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto 80px auto;
+      flex-wrap: wrap;
+    }
+
+    /* 左右区域 */
+    .left-section, .right-section {
       background-color: var(--green);
-      border-radius: 10px;
-      padding: 20px;
-      color: white;
+      border-radius: 15px;
+      padding: 30px 25px;
+      box-shadow: 0 0 20px rgb(255 255 255 / 0.15);
+      flex: 1 1 450px;
+      min-width: 300px;
+      max-height: 700px;
+      overflow-y: auto;
+      color: #f0f0f0;
     }
+    /* 滚动条美化 */
+    .left-section::-webkit-scrollbar,
+    .right-section::-webkit-scrollbar {
+      width: 8px;
+    }
+    .left-section::-webkit-scrollbar-thumb,
+    .right-section::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 4px;
+    }
+
+    /* 分区标题 */
+    h2 {
+      font-family: "Great Vibes", cursive;
+      font-size: 36px;
+      margin-bottom: 25px;
+      color: var(--beige);
+      user-select: none;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 10px;
+    }
+
+    /* 表单控件圆润 */
+    textarea.form-control, input.form-control {
+      border-radius: 12px;
+      background-color: #39453f;
+      border: 1px solid var(--gold);
+      color: #f0f0f0;
+    }
+    textarea.form-control::placeholder, input.form-control::placeholder {
+      color: #cfcfcf;
+      opacity: 0.8;
+    }
+    textarea.form-control:focus, input.form-control:focus {
+      background-color: #455647;
+      border-color: var(--beige);
+      color: var(--beige);
+      box-shadow: 0 0 10px var(--gold);
+    }
+
+    /* 生成傩面显示区 */
+    #generated-mask img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px var(--gold);
+      margin-top: 15px;
+      user-select: none;
+    }
+
+    /* 留言板样式 */
     .comment-list {
       margin-top: 20px;
+      max-height: 420px;
+      overflow-y: auto;
     }
     .comment {
       border-bottom: 1px solid var(--gold);
-      padding: 10px 0;
+      padding: 12px 8px;
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
-    textarea.form-control {
-      border-radius: 12px;
+    .comment strong {
+      color: var(--beige);
     }
-    .btn-group-container {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
+
+    /* 提交按钮 */
+    button.btn-warning {
+      border-radius: 10px;
+      padding: 8px 25px;
+      font-weight: 600;
+      box-shadow: 0 0 12px rgb(142 124 88 / 0.7);
+      transition: box-shadow 0.3s ease;
+    }
+    button.btn-warning:hover {
+      box-shadow: 0 0 20px rgb(142 124 88 / 1);
+    }
+
+    button.btn-light {
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 8px 25px;
+      color: var(--bg-color);
+      background: #fdfefe;
+      box-shadow: 0 0 12px rgb(142 124 88 / 0.7);
+      transition: box-shadow 0.3s ease;
+    }
+    button.btn-light:hover {
+      box-shadow: 0 0 20px rgb(142 124 88 / 1);
+      color: var(--bg-color);
+      background: #f9f9f9;
     }
   </style>
 </head>
 <body>
-  <div class="d-flex">
+
+  <!-- 背景canvas -->
+  <canvas id="background-canvas"></canvas>
+
+  <div class="d-flex" style="min-height: 100vh;">
     <div class="side-title">傩韵新章 非遗傩文化数字化保护</div>
-    <div class="flex-grow-1">
+    <div class="flex-grow-1 d-flex flex-column align-items-center">
+
       <div class="main-title">NuóCulture</div>
 
-      <div class="section text-center btn-group-container">
-        <a href="#memory-game-section" class="btn btn-outline-warning">🎮 傩文化记忆游戏</a>
-        <a href="#create-mask-section" class="btn btn-outline-warning">🎨 创造我的傩面</a>
-        <a href="#comment-section" class="btn btn-outline-warning">💬 留言区</a>
+      <!-- 顶部按钮组 -->
+      <div class="btn-container" role="group" aria-label="主页功能导航按钮">
+        <a href="./game.html" class="btn btn-gradient" role="button" tabindex="0">
+          傩面记忆大挑战<br><small>Mask Memory Challenge</small>
+        </a>
+        <a href="#create-mask-section" class="btn btn-gradient" role="button" tabindex="0">
+          创造我的傩面<br><small>Create My Mask</small>
+        </a>
+        <a href="#comment-section" class="btn btn-gradient" role="button" tabindex="0">
+          留言区<br><small>Comments</small>
+        </a>
       </div>
 
-      <div class="section" id="memory-game-section">
-        <iframe src="./game.html" width="100%" height="650" style="border: none; border-radius: 10px;"></iframe>
-      </div>
+      <!-- 主体内容区 -->
+      <div class="content-container">
 
-      <div class="section" id="create-mask-section">
-        <h2>🎨 创造我的傩面</h2>
-        <form id="create-mask-form">
-          <div class="mb-3">
-            <label class="form-label">描述你的傩面形象</label>
-            <textarea class="form-control" id="prompt" rows="3" placeholder="如：红色、愤怒、带有龙纹..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-warning">生成傩面</button>
-        </form>
-        <div class="mt-4" id="generated-mask"></div>
-      </div>
+        <!-- 左半边：创造我的傩面 -->
+        <section class="left-section" id="create-mask-section" aria-label="创造我的傩面">
+          <h2>创造我的傩面</h2>
+          <form id="create-mask-form">
+            <div class="mb-3">
+              <label for="prompt" class="form-label">描述你的傩面形象</label>
+              <textarea class="form-control" id="prompt" rows="3" placeholder="如：傩面具，红色、愤怒、带有龙纹..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">生成傩面</button>
+          </form>
+          <div class="mt-4" id="generated-mask" aria-live="polite" aria-atomic="true"></div>
+        </section>
 
-      <div class="section" id="comment-section">
-        <h2>💬 留言区</h2>
-        <form id="comment-form">
-          <div class="mb-2">
-            <label class="form-label">您的名字</label>
-            <input type="text" class="form-control" id="user-name" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">留言内容</label>
-            <textarea class="form-control" id="user-comment" rows="3" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-light">提交留言</button>
-        </form>
-        <div class="comment-list" id="comments"></div>
+        <!-- 右半边：留言区 -->
+        <section class="right-section" id="comment-section" aria-label="留言区">
+          <h2>留言区</h2>
+          <form id="comment-form">
+            <div class="mb-3">
+              <label for="user-name" class="form-label">您的名字</label>
+              <input type="text" class="form-control" id="user-name" required placeholder="请输入您的名字" />
+            </div>
+            <div class="mb-3">
+              <label for="user-comment" class="form-label">留言内容</label>
+              <textarea class="form-control" id="user-comment" rows="4" required placeholder="请输入留言内容"></textarea>
+            </div>
+            <button type="submit" class="btn btn-light">提交留言</button>
+          </form>
+          <div class="comment-list" id="comments" aria-live="polite" aria-atomic="true"></div>
+        </section>
+
       </div>
     </div>
   </div>
 
   <script>
-    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA'; // 在此填写你的 CogView-4 API Key
+    // CogView API配置信息（替换为你的Key）
+    const cogviewApiKey = '5df906688ceb4f21981a59658e8776db.KE13lgfx6JKB3KaA';
     const cogviewApiUrl = 'https://open.bigmodel.cn/api/paas/v4/images/generations';
 
-    document.getElementById("create-mask-form").addEventListener("submit", async function (e) {
+    // 生成傩面表单提交
+    document.getElementById("create-mask-form").addEventListener("submit", async function(e){
       e.preventDefault();
       const prompt = document.getElementById("prompt").value.trim();
       const resultDiv = document.getElementById("generated-mask");
+      if(!prompt){
+        resultDiv.innerHTML = '<p class="text-danger">请输入描述内容。</p>';
+        return;
+      }
       resultDiv.innerHTML = '<p>生成中，请稍候...</p>';
 
       try {
@@ -135,31 +298,87 @@
           })
         });
         const data = await res.json();
-        if (data?.data?.[0]?.url) {
-          resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" class="img-fluid rounded" alt="生成傩面">`;
+        if(data?.data?.[0]?.url){
+          resultDiv.innerHTML = `<p>生成完成：</p><img src="${data.data[0].url}" alt="生成傩面图像" />`;
         } else {
           resultDiv.innerHTML = '<p class="text-danger">生成失败，请检查提示或稍后重试。</p>';
         }
-      } catch (err) {
+      } catch(err){
         console.error(err);
         resultDiv.innerHTML = '<p class="text-danger">发生错误，请稍后再试。</p>';
       }
     });
 
-    document.getElementById("comment-form").addEventListener("submit", function (e) {
+    // 留言表单提交
+    document.getElementById("comment-form").addEventListener("submit", function(e){
       e.preventDefault();
-      const name = document.getElementById("user-name").value;
-      const comment = document.getElementById("user-comment").value;
-      if (name && comment) {
+      const name = document.getElementById("user-name").value.trim();
+      const comment = document.getElementById("user-comment").value.trim();
+      if(name && comment){
         const container = document.getElementById("comments");
         const div = document.createElement("div");
         div.className = "comment";
         div.innerHTML = `<strong>${name}</strong>: ${comment}`;
         container.prepend(div);
-        document.getElementById("comment-form").reset();
+        this.reset();
       }
     });
+
+    // 简单粒子背景动画
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let width, height;
+
+    function initCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      particles = [];
+      for(let i=0; i<80; i++){
+        particles.push({
+          x: Math.random()*width,
+          y: Math.random()*height,
+          size: 1 + Math.random()*2,
+          speedX: (Math.random()-0.5)*0.3,
+          speedY: (Math.random()-0.5)*0.3,
+          opacity: 0.3 + Math.random()*0.5,
+          direction: Math.random() > 0.5 ? 1 : -1,
+          angle: Math.random()*Math.PI*2
+        });
+      }
+    }
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      for(let p of particles){
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.angle += 0.02 * p.direction;
+        // 边界反弹
+        if(p.x < 0 || p.x > width) p.speedX *= -1;
+        if(p.y < 0 || p.y > height) p.speedY *= -1;
+        // 漂浮的光晕圆点
+        ctx.beginPath();
+        const glowRadius = 8 + 4 * Math.sin(p.angle);
+        let grad = ctx.createRadialGradient(p.x, p.y, glowRadius*0.3, p.x, p.y, glowRadius);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${p.opacity})`);
+        grad.addColorStop(1, 'rgba(142, 124, 88, 0)');
+        ctx.fillStyle = grad;
+        ctx.arc(p.x, p.y, glowRadius, 0, Math.PI*2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => {
+      initCanvas();
+    });
+
+    initCanvas();
+    draw();
   </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
